@@ -16,6 +16,9 @@ GPU memory >= 11GB for inference on Adobe Composition-1K testing set, more gener
 - torch >= 1.4
 - numpy
 - opencv-python
+#### Additional Packages for jupyter notebook
+- matplotlib
+- gdown (to download model inside notebook)
 
 
 ## Models
@@ -27,4 +30,17 @@ GPU memory >= 11GB for inference on Adobe Composition-1K testing set, more gener
 
 
 ## Prediction 
-We provide a script `demo.py` which gives the foreground, background and alpha results of our model. 
+We provide a script `demo.py` and jupyter notebook which both give the foreground, background and alpha predictions of our model. 
+
+
+## Citation
+
+```
+@article{forte2020fbamatting,
+  title   = {F, B, Alpha Matting},
+  author  = {Marco Forte and François Pitié},
+  journal = {CoRR},
+  volume  = {abs/2003.07711},
+  year    = {2020},
+}
+```

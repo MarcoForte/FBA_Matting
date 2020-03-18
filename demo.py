@@ -36,8 +36,7 @@ def predict_fba_folder(model, args):
         image_np = item_dict['image']
         trimap_np = item_dict['trimap']
 
-        with torch.no_grad():
-            fg, bg, alpha = pred(image_np, trimap_np, model)
+        fg, bg, alpha = pred(image_np, trimap_np, model)
 
         cv2.imwrite(os.path.join(save_dir, item_dict['name'][:-4] + '_fg.png'), fg[:, :, ::-1] * 255)
         cv2.imwrite(os.path.join(save_dir, item_dict['name'][:-4] + '_bg.png'), bg[:, :, ::-1] * 255)
@@ -59,15 +58,17 @@ def pred(image_np: np.ndarray, trimap_np: np.ndarray, model) -> np.ndarray:
     image_scale_np = scale_input(image_np, 1.0, cv2.INTER_LANCZOS4)
     trimap_scale_np = scale_input(trimap_np, 1.0, cv2.INTER_LANCZOS4)
 
-    image_torch = np_to_torch(image_scale_np)
-    trimap_torch = np_to_torch(trimap_scale_np)
+    with torch.no_grad():
 
-    trimap_transformed_torch = np_to_torch(trimap_transform(trimap_scale_np))
-    image_transformed_torch = groupnorm_normalise_image(image_torch.clone(), format='nchw')
+        image_torch = np_to_torch(image_scale_np)
+        trimap_torch = np_to_torch(trimap_scale_np)
 
-    output = model(image_torch, trimap_torch, image_transformed_torch, trimap_transformed_torch)
+        trimap_transformed_torch = np_to_torch(trimap_transform(trimap_scale_np))
+        image_transformed_torch = groupnorm_normalise_image(image_torch.clone(), format='nchw')
 
-    output = cv2.resize(output[0].cpu().numpy().transpose((1, 2, 0)), (w, h), cv2.INTER_LANCZOS4)
+        output = model(image_torch, trimap_torch, image_transformed_torch, trimap_transformed_torch)
+
+        output = cv2.resize(output[0].cpu().numpy().transpose((1, 2, 0)), (w, h), cv2.INTER_LANCZOS4)
     alpha = output[:, :, 0]
     fg = output[:, :, 1:4]
     bg = output[:, :, 4:7]
