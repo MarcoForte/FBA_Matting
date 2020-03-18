@@ -4,5 +4,4 @@
 .vscode/*
 
 *.pth
-#./ipynb_checkpoints
-#./ipynb_checkpoints/*
+.ipynb_checkpoints
