@@ -4,7 +4,6 @@ Marco Forte<sup>1</sup>, [François Pitié](https://francois.pitie.net/)<sup>1</
 
 <sup>1</sup> Trinity College Dublin
 
-Matting and compositing results on real images.
 <p align="center">
   <img src="./examples/example_results.png" width="640" title="Our results"/>
 </p>
