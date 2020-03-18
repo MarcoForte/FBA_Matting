@@ -1,5 +1,5 @@
 # FBA-Matting
-Official repository for the paper [**F, B, Alpha Matting**](https://arxiv.org/abs/2003.07711), under review at ECCV2020.
+Official repository for the paper [**F, B, Alpha Matting**](https://arxiv.org/abs/2003.07711), under review at ECCV2020.  
 Marco Forte<sup>1</sup>, François Pitié<sup>1</sup>  
 
 <sup>1</sup> Trinity College Dublin
