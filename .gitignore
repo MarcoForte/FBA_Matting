@@ -1,4 +1,8 @@
-.vscode/*
+./vscode/*
 *.pyc
-.vscode
+./vscode
+.vscode/*
+
 *.pth
+#./ipynb_checkpoints
+#./ipynb_checkpoints/*
