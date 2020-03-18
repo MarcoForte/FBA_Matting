@@ -10,7 +10,7 @@ Matting and compositing results on real images.
 </p>
 
 ## Requirements
-GPU memory >= 11GB for inference on Adobe Composition-1K testing set (Resolution above 1920x1080).
+GPU memory >= 11GB for inference on Adobe Composition-1K testing set, more generally for resolutions above 1920x1080.
 
 #### Packages:
 - torch >= 1.4
