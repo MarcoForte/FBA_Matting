@@ -6,7 +6,7 @@ Marco Forte<sup>1</sup>, [François Pitié](https://francois.pitie.net/)<sup>1</
 <sup>1</sup> Trinity College Dublin
 
 <p align="center">
-  <img src="./examples/example_results.png" width="640" title="Our results"/>
+  <img src="./examples/example_results.png" width="840" title="Our results"/>
 </p>
 
 ## Requirements
@@ -30,8 +30,16 @@ GPU memory >= 11GB for inference on Adobe Composition-1K testing set, more gener
 
 
 ## Prediction 
-We provide a script `demo.py` and jupyter notebook which both give the foreground, background and alpha predictions of our model. 
+We provide a script `demo.py` and jupyter notebook which both give the foreground, background and alpha predictions of our model. The test time augmentation code will be made availiable soon.  
 
+
+## Training
+Training code is not released at this time. It may be released upon acceptance of the paper.
+Here are the key takeaways from our work with regards training.
+- Use a batch-size of 1, and use Group Normalisation and Weight Standardisation in your network.
+- Train with clipping of the alpha instead of sigmoid.
+- The L1 alpha, compositional loss and laplacian loss are beneficial. Gradient loss is not needed.
+- For foreground prediction, we extend the foreground to the entire image and define the loss on the entire image or at least the unknown region. We found this better than solely where alpha>0.
 
 ## Citation
 
