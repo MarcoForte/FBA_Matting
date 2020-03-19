@@ -87,9 +87,9 @@ if __name__ == '__main__':
     parser.add_argument('--encoder', default='resnet50_GN_WS', help="encoder model")
     parser.add_argument('--decoder', default='fba_decoder', help="Decoder model")
     parser.add_argument('--weights', default='FBA.pth')
-    parser.add_argument('--image_dir', default='./examples/Images', help="")
-    parser.add_argument('--trimap_dir', default='./examples/Trimaps', help="")
-    parser.add_argument('--output_dir', default='./examples/Predictions', help="")
+    parser.add_argument('--image_dir', default='./examples/images', help="")
+    parser.add_argument('--trimap_dir', default='./examples/trimaps', help="")
+    parser.add_argument('--output_dir', default='./examples/predictions', help="")
 
     args = parser.parse_args()
     model = build_model(args)
