@@ -39,7 +39,7 @@ Here are the key takeaways from our work with regards training.
 - Use a batch-size of 1, and use Group Normalisation and Weight Standardisation in your network.
 - Train with clipping of the alpha instead of sigmoid.
 - The L1 alpha, compositional loss and laplacian loss are beneficial. Gradient loss is not needed.
-- For foreground prediction, we extend the foreground to the entire image and define the loss on the entire image or at least the unknown region. We found this better than solely where alpha>0.
+- For foreground prediction, we extend the foreground to the entire image and define the loss on the entire image or at least the unknown region. We found this better than solely where alpha>0. [Code for foreground extension](https://github.com/MarcoForte/closed-form-matting/blob/master/solve_foreground_background.py)
 
 ## Citation
 
