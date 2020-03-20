@@ -52,3 +52,5 @@ Here are the key takeaways from our work with regards training.
   year    = {2020},
 }
 ```
+### Related works of ours
+ - [99% accurate interactive object selection with just a few clicks](https://arxiv.org/abs/2003.07932)
