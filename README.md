@@ -23,7 +23,7 @@ GPU memory >= 11GB for inference on Adobe Composition-1K testing set, more gener
 
 ## Models
 **These models have been trained on Adobe Image Matting Dataset. They are covered by the [Adobe Deep Image Mattng Dataset License Agreement](https://drive.google.com/open?id=1MKRen-TDGXYxm9IawPAZrdXQIYhI0XRf) so they can only be used and distributed for noncommercial purposes.**  
-More results of this model avialiable on the [alphamatting.com](http://www.alphamatting.com/eval_25.php) and [videomatting.com](http://videomatting.com/#rating) benchmark.
+More results of this model avialiable on the [alphamatting.com](http://www.alphamatting.com/eval_25.php), the [videomatting.com](http://videomatting.com/#rating) benchmark, and the supplementary materials [PDF](https://drive.google.com/file/d/1m-xjIB2dqbO8Q15M8ytzxX0FqHcrLNCk/view?usp=sharing).
 | Model Name  |     File Size   | SAD | MSE | Grad | Conn |
 | :------------- |------------:| :-----|----:|----:|----:|
 | [FBA](https://drive.google.com/file/d/1T_oiKDE_biWf2kqexMEN7ObWqtXAzbB1/view?usp=sharing) Table. 4  | 139mb | 26.4 | 5.4 | 10.6 | 21.5 |
