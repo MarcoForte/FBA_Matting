@@ -1,4 +1,6 @@
-# FBA-Matting [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Ut2szLBTxPejGHt_GYUkua21yUVWseOE)
+
+# FBA-Matting [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Ut2szLBTxPejGHt_GYUkua21yUVWseOE) [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/f-b-alpha-matting/image-matting-on-composition-1k)](https://paperswithcode.com/sota/image-matting-on-composition-1k?p=f-b-alpha-matting)
+
 
 Official repository for the paper [**F, B, Alpha Matting**](https://arxiv.org/abs/2003.07711), under review at ECCV2020.  
 Marco Forte<sup>1</sup>, [François Pitié](https://francois.pitie.net/)<sup>1</sup>  
