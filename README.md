@@ -33,7 +33,8 @@ More results of this model avialiable on the [alphamatting.com](http://www.alpha
 
 ## Prediction 
 We provide a script `demo.py` and jupyter notebook which both give the foreground, background and alpha predictions of our model. The test time augmentation code will be made availiable soon.  
-
+#### In this [video](https://www.youtube.com/watch?v=gl1XOAuMckM) I demonstrate how to create a trimap in Pinta/Paint.NET. 
+ 
 
 ## Training
 Training code is not released at this time. It may be released upon acceptance of the paper.
