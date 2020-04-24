@@ -1,5 +1,5 @@
 
-# FBA-Matting [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Ut2szLBTxPejGHt_GYUkua21yUVWseOE) [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/f-b-alpha-matting/image-matting-on-composition-1k)](https://paperswithcode.com/sota/image-matting-on-composition-1k?p=f-b-alpha-matting) [![License: MIT](https://img.shields.io/github/license/pymatting/pymatting?color=brightgreen)](https://opensource.org/licenses/MIT) [![Arxiv](http://img.shields.io/badge/cs.CV-arXiv-B31B1B.svg)](https://arxiv.org/abs/2003.07711)
+# FBA Matting [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Ut2szLBTxPejGHt_GYUkua21yUVWseOE) [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/f-b-alpha-matting/image-matting-on-composition-1k)](https://paperswithcode.com/sota/image-matting-on-composition-1k?p=f-b-alpha-matting) [![License: MIT](https://img.shields.io/github/license/pymatting/pymatting?color=brightgreen)](https://opensource.org/licenses/MIT) [![Arxiv](http://img.shields.io/badge/cs.CV-arXiv-B31B1B.svg)](https://arxiv.org/abs/2003.07711)
 
 
 Official repository for the paper [**F, B, Alpha Matting**](https://arxiv.org/abs/2003.07711), under review at ECCV2020.  
