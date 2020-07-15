@@ -17,10 +17,10 @@ def build_model(args):
 
     model = MattingModule(net_encoder, net_decoder)
 
-    model.cuda()
+    model
 
     if(args.weights != 'default'):
-        sd = torch.load(args.weights)
+        sd = torch.load(args.weights, map_location=torch.device('cpu'))
         model.load_state_dict(sd, strict=True)
 
     return model
