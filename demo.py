@@ -2,6 +2,7 @@
 from networks.transforms import trimap_transform, groupnorm_normalise_image
 from networks.models import build_model
 from dataloader import PredDataset
+from cuda_device import CUDA_DEVICE
 
 # System libs
 import os
@@ -14,7 +15,10 @@ import torch
 
 
 def np_to_torch(x):
-    return torch.from_numpy(x).permute(2, 0, 1)[None, :, :, :].float()
+    val = torch.from_numpy(x).permute(2, 0, 1)[None, :, :, :].float()
+    if CUDA_DEVICE == 'gpu':
+        val = val.cuda()
+    return val
 
 
 def scale_input(x: np.ndarray, scale: float, scale_type) -> np.ndarray:
