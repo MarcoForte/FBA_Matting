@@ -3,6 +3,7 @@ import torch.nn as nn
 import networks.resnet_GN_WS as resnet_GN_WS
 import networks.layers_WS as L
 import networks.resnet_bn as resnet_bn
+from cuda_device import CUDA_DEVICE
 
 
 def build_model(args):
@@ -17,10 +18,11 @@ def build_model(args):
 
     model = MattingModule(net_encoder, net_decoder)
 
-    model.cuda()
+    if CUDA_DEVICE == 'gpu':
+        model.cuda()
 
     if(args.weights != 'default'):
-        sd = torch.load(args.weights)
+        sd = torch.load(args.weights, map_location=torch.device(CUDA_DEVICE))
         model.load_state_dict(sd, strict=True)
 
     return model
