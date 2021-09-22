@@ -1,5 +1,5 @@
 # Our libs
-from networks.transforms import trimap_transform, groupnorm_normalise_image
+from networks.transforms import trimap_transform, normalise_image
 from networks.models import build_model
 from dataloader import PredDataset
 
@@ -11,10 +11,14 @@ import argparse
 import cv2
 import numpy as np
 import torch
+import time
 
+def np_to_torch(x, permute=True):
+    if permute:
+        return torch.from_numpy(x).permute(2, 0, 1)[None, :, :, :].float().cuda()
+    else:
+        return torch.from_numpy(x)[None, :, :, :].float().cuda()
 
-def np_to_torch(x):
-    return torch.from_numpy(x).permute(2, 0, 1)[None, :, :, :].float().cuda()
 
 
 def scale_input(x: np.ndarray, scale: float, scale_type) -> np.ndarray:
@@ -36,8 +40,9 @@ def predict_fba_folder(model, args):
         image_np = item_dict['image']
         trimap_np = item_dict['trimap']
 
+        st = time.time()
         fg, bg, alpha = pred(image_np, trimap_np, model)
-
+        print("Time taken for prediction: ", time.time() - st)
         cv2.imwrite(os.path.join(
             save_dir, item_dict['name'][:-4] + '_fg.png'), fg[:, :, ::-1] * 255)
         cv2.imwrite(os.path.join(
@@ -65,9 +70,9 @@ def pred(image_np: np.ndarray, trimap_np: np.ndarray, model) -> np.ndarray:
         trimap_torch = np_to_torch(trimap_scale_np)
 
         trimap_transformed_torch = np_to_torch(
-            trimap_transform(trimap_scale_np))
-        image_transformed_torch = groupnorm_normalise_image(
-            image_torch.clone(), format='nchw')
+            trimap_transform(trimap_scale_np), permute=False)
+        image_transformed_torch = normalise_image(
+            image_torch.clone())
 
         output = model(
             image_torch,
@@ -101,12 +106,8 @@ if __name__ == '__main__':
         '--output_dir',
         default='./examples/predictions',
         help="")
-    parser.add_argument(
-        '--custom_groupnorm',
-        default=False,
-        help="Useful for conversion to TRTorch")
 
     args = parser.parse_args()
-    model = build_model(args.weights, custom_groupnorm=args.custom_groupnorm)
+    model = build_model(args.weights)
     model.eval().cuda()
     predict_fba_folder(model, args)
