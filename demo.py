@@ -38,9 +38,12 @@ def predict_fba_folder(model, args):
 
         fg, bg, alpha = pred(image_np, trimap_np, model)
 
-        cv2.imwrite(os.path.join(save_dir, item_dict['name'][:-4] + '_fg.png'), fg[:, :, ::-1] * 255)
-        cv2.imwrite(os.path.join(save_dir, item_dict['name'][:-4] + '_bg.png'), bg[:, :, ::-1] * 255)
-        cv2.imwrite(os.path.join(save_dir, item_dict['name'][:-4] + '_alpha.png'), alpha * 255)
+        cv2.imwrite(os.path.join(
+            save_dir, item_dict['name'][:-4] + '_fg.png'), fg[:, :, ::-1] * 255)
+        cv2.imwrite(os.path.join(
+            save_dir, item_dict['name'][:-4] + '_bg.png'), bg[:, :, ::-1] * 255)
+        cv2.imwrite(os.path.join(
+            save_dir, item_dict['name'][:-4] + '_alpha.png'), alpha * 255)
 
 
 def pred(image_np: np.ndarray, trimap_np: np.ndarray, model) -> np.ndarray:
@@ -54,21 +57,27 @@ def pred(image_np: np.ndarray, trimap_np: np.ndarray, model) -> np.ndarray:
         alpha: alpha matte image between 0 and 1. Dimensions: (h, w)
     '''
     h, w = trimap_np.shape[:2]
-
     image_scale_np = scale_input(image_np, 1.0, cv2.INTER_LANCZOS4)
     trimap_scale_np = scale_input(trimap_np, 1.0, cv2.INTER_LANCZOS4)
 
     with torch.no_grad():
-
         image_torch = np_to_torch(image_scale_np)
         trimap_torch = np_to_torch(trimap_scale_np)
 
-        trimap_transformed_torch = np_to_torch(trimap_transform(trimap_scale_np))
-        image_transformed_torch = groupnorm_normalise_image(image_torch.clone(), format='nchw')
+        trimap_transformed_torch = np_to_torch(
+            trimap_transform(trimap_scale_np))
+        image_transformed_torch = groupnorm_normalise_image(
+            image_torch.clone(), format='nchw')
 
-        output = model(image_torch, trimap_torch, image_transformed_torch, trimap_transformed_torch)
+        output = model(
+            image_torch,
+            trimap_torch,
+            image_transformed_torch,
+            trimap_transformed_torch)
+        output = cv2.resize(
+            output[0].cpu().numpy().transpose(
+                (1, 2, 0)), (w, h), cv2.INTER_LANCZOS4)
 
-        output = cv2.resize(output[0].cpu().numpy().transpose((1, 2, 0)), (w, h), cv2.INTER_LANCZOS4)
     alpha = output[:, :, 0]
     fg = output[:, :, 1:4]
     bg = output[:, :, 4:7]
@@ -77,6 +86,7 @@ def pred(image_np: np.ndarray, trimap_np: np.ndarray, model) -> np.ndarray:
     alpha[trimap_np[:, :, 1] == 1] = 1
     fg[alpha == 1] = image_np[alpha == 1]
     bg[alpha == 0] = image_np[alpha == 0]
+
     return fg, bg, alpha
 
 
@@ -84,14 +94,19 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     # Model related arguments
-    parser.add_argument('--encoder', default='resnet50_GN_WS', help="encoder model")
-    parser.add_argument('--decoder', default='fba_decoder', help="Decoder model")
     parser.add_argument('--weights', default='FBA.pth')
     parser.add_argument('--image_dir', default='./examples/images', help="")
     parser.add_argument('--trimap_dir', default='./examples/trimaps', help="")
-    parser.add_argument('--output_dir', default='./examples/predictions', help="")
+    parser.add_argument(
+        '--output_dir',
+        default='./examples/predictions',
+        help="")
+    parser.add_argument(
+        '--custom_groupnorm',
+        default=False,
+        help="Useful for conversion to TRTorch")
 
     args = parser.parse_args()
-    model = build_model(args)
-    model.eval()
+    model = build_model(args.weights, custom_groupnorm=args.custom_groupnorm)
+    model.eval().cuda()
     predict_fba_folder(model, args)

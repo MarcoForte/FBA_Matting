@@ -15,49 +15,17 @@ def conv1x1(in_planes, out_planes, stride=1):
     return L.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
 
-class BasicBlock(nn.Module):
-    expansion = 1
-
-    def __init__(self, inplanes, planes, stride=1, downsample=None):
-        super(BasicBlock, self).__init__()
-        self.conv1 = conv3x3(inplanes, planes, stride)
-        self.bn1 = L.BatchNorm2d(planes)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv2 = conv3x3(planes, planes)
-        self.bn2 = L.BatchNorm2d(planes)
-        self.downsample = downsample
-        self.stride = stride
-
-    def forward(self, x):
-        identity = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        if self.downsample is not None:
-            identity = self.downsample(x)
-
-        out += identity
-        out = self.relu(out)
-
-        return out
-
-
 class Bottleneck(nn.Module):
     expansion = 4
 
-    def __init__(self, inplanes, planes, stride=1, downsample=None):
+    def __init__(self, inplanes, planes, stride=1, downsample=None, custom_groupnorm=False):
         super(Bottleneck, self).__init__()
         self.conv1 = conv1x1(inplanes, planes)
-        self.bn1 = L.BatchNorm2d(planes)
+        self.bn1 = L.norm(planes, custom_groupnorm)
         self.conv2 = conv3x3(planes, planes, stride)
-        self.bn2 = L.BatchNorm2d(planes)
+        self.bn2 = L.norm(planes, custom_groupnorm)
         self.conv3 = conv1x1(planes, planes * self.expansion)
-        self.bn3 = L.BatchNorm2d(planes * self.expansion)
+        self.bn3 = L.norm(planes * self.expansion, custom_groupnorm)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.stride = stride
@@ -87,34 +55,34 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, num_classes=1000):
+    def __init__(self, block=Bottleneck, layers=[3, 4, 6, 3], num_classes=1000, custom_groupnorm=False):
         super(ResNet, self).__init__()
         self.inplanes = 64
         self.conv1 = L.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
                               bias=False)
-        self.bn1 = L.BatchNorm2d(64)
+        self.bn1 = L.norm(64, custom_groupnorm)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1, return_indices=True)
-        self.layer1 = self._make_layer(block, 64, layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
+        self.layer1 = self._make_layer(block, 64, layers[0], custom_groupnorm=custom_groupnorm)
+        self.layer2 = self._make_layer(block, 128, layers[1], stride=2, custom_groupnorm=custom_groupnorm)
+        self.layer3 = self._make_layer(block, 256, layers[2], stride=2,custom_groupnorm=custom_groupnorm)
+        self.layer4 = self._make_layer(block, 512, layers[3], stride=2,custom_groupnorm=custom_groupnorm)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
-    def _make_layer(self, block, planes, blocks, stride=1):
+    def _make_layer(self, block, planes, blocks, stride=1, custom_groupnorm=False):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
                 conv1x1(self.inplanes, planes * block.expansion, stride),
-                L.BatchNorm2d(planes * block.expansion),
+                L.norm(planes * block.expansion, custom_groupnorm),
             )
 
         layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample))
+        layers.append(block(self.inplanes, planes, stride, downsample, custom_groupnorm=custom_groupnorm))
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
+            layers.append(block(self.inplanes, planes, custom_groupnorm=custom_groupnorm))
 
         return nn.Sequential(*layers)
 
@@ -134,12 +102,3 @@ class ResNet(nn.Module):
         x = self.fc(x)
 
         return x
-
-
-def l_resnet50(pretrained=False, **kwargs):
-    """Constructs a ResNet-50 model.
-    Args:
-        pretrained (bool): If True, returns a model pre-trained on ImageNet
-    """
-    model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
-    return model
