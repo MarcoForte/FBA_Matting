@@ -3,10 +3,10 @@ import torch.nn as nn
 from networks.resnet_GN_WS import ResNet
 import networks.layers_WS as L
 
-def build_model(weights, custom_groupnorm=False):
-    net_encoder = fba_encoder(custom_groupnorm)
+def build_model(weights):
+    net_encoder = fba_encoder()
 
-    net_decoder = fba_decoder(custom_groupnorm)
+    net_decoder = fba_decoder()
 
     model = MattingModule(net_encoder, net_decoder)
 
@@ -29,8 +29,8 @@ class MattingModule(nn.Module):
         return self.decoder(conv_out, image, indices, two_chan_trimap)
 
 
-def fba_encoder(custom_groupnorm):
-    orig_resnet = ResNet(custom_groupnorm=custom_groupnorm)
+def fba_encoder():
+    orig_resnet = ResNet()
     net_encoder = ResnetDilated(orig_resnet, dilate_scale=8)
 
     num_channels = 3 + 6 + 2
@@ -129,7 +129,7 @@ def fba_fusion(alpha, img, F, B):
 
 
 class fba_decoder(nn.Module):
-    def __init__(self, custom_groupnorm=False):
+    def __init__(self):
         super(fba_decoder, self).__init__()
         pool_scales = (1, 2, 3, 6)
 
@@ -139,7 +139,7 @@ class fba_decoder(nn.Module):
             self.ppm.append(nn.Sequential(
                 nn.AdaptiveAvgPool2d(scale),
                 L.Conv2d(2048, 256, kernel_size=1, bias=True),
-                L.norm(256, custom_groupnorm),
+                L.norm(256),
                 nn.LeakyReLU()
             ))
         self.ppm = nn.ModuleList(self.ppm)
@@ -148,23 +148,23 @@ class fba_decoder(nn.Module):
             L.Conv2d(2048 + len(pool_scales) * 256, 256,
                      kernel_size=3, padding=1, bias=True),
 
-            L.norm(256, custom_groupnorm),
+            L.norm(256),
             nn.LeakyReLU(),
             L.Conv2d(256, 256, kernel_size=3, padding=1),
-            L.norm(256, custom_groupnorm),
+            L.norm(256),
             nn.LeakyReLU()
         )
 
         self.conv_up2 = nn.Sequential(
             L.Conv2d(256 + 256, 256,
                      kernel_size=3, padding=1, bias=True),
-            L.norm(256, custom_groupnorm),
+            L.norm(256),
             nn.LeakyReLU()
         )
         self.conv_up3 = nn.Sequential(
             L.Conv2d(256 + 64, 64,
                      kernel_size=3, padding=1, bias=True),
-            L.norm(64, custom_groupnorm),
+            L.norm(64),
             nn.LeakyReLU()
         )
 

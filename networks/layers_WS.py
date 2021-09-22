@@ -29,9 +29,7 @@ class Conv2d(nn.Conv2d):
         super().train(mode=mode)
         self.normalize_weight()
 
-def norm(dim, is_custom=False):
-    if is_custom:
-        return CustomGroupNorm(32, dim)
+def norm(dim):
     return nn.GroupNorm(32, dim)
 
 
