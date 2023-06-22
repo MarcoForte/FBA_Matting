@@ -1,0 +1,3 @@
+[submodule "huggingface"]
+	path = huggingface
+	url = https://huggingface.co/spaces/leonelhs/FBA-Matting
